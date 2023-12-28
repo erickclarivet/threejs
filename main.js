@@ -1,5 +1,5 @@
-import * as THREE from 'three';
 import { Player } from './Player.js';
+
 
 const parent = document.getElementById("render");
 
@@ -18,13 +18,24 @@ player.AttachRendererToParent();
 player.AddAmbientLight(0x000000);
 player.AddDirectionalLight(0xffffff, 3, 1, 1, 1);
 player.AddDirectionalLight(0xffffff, 3, -1, -1, -1);
-          
-const path = './A812_A.stl';
+
+const path = './my_object.stl';
 
 const modelMaterial = {
       roughness: 0.3,
       color: color,
 }
+
+player.CreateStats();
+player.CreateGui();
+
 player.LoadSTLModel(path, color, modelMaterial);
 player.AddListeners(false, true);
+
+player.AddObjectToGui('Camera', player._camera);
+
+// const cameraFolder = gui.addFolder('Camera');
+// cameraFolder.add(camera.position, 'z', 0, 10);
+// cameraFolder.open();
+
 player.Animate();

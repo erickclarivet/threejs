@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GUI } from 'dat.gui';
+import Stats from 'three/examples/jsm/libs/stats.module'
 
 export class Player {
     _parent;
@@ -14,6 +16,8 @@ export class Player {
         startX: 0,
         startY: 0
     };
+    _stats;
+    _gui;
     
     CreateScene() {
         this._scene = new THREE.Scene();
@@ -62,6 +66,28 @@ export class Player {
         this._controls.enableDamping = enableDamping;
         this._controls.enablePan = enablePan;
         this._controls.enableRotate = enableRotate;
+    }
+
+    CreateStats() {
+        this._stats = new Stats();
+        this._parent.appendChild(this._stats.dom);
+    }
+
+    CreateGui() {
+        this._gui = new GUI({ autoPlace: false });
+        this._gui.domElement.id = 'gui';
+        this._gui.width = (this._parent.clientWidth * 35) / 100;
+        // const guiContainer = document.getElementById('gui_container');
+        this._parent.appendChild(this._gui.domElement);
+
+    }
+
+    AddObjectToGui( name, object) {
+        const objectFolder = this._gui.addFolder(name);
+        objectFolder.add(object.rotation, 'x', 0, Math.PI * 2);
+        objectFolder.add(object.rotation, 'y', 0, Math.PI * 2);
+        objectFolder.add(object.rotation, 'z', 0, Math.PI * 2);
+        objectFolder.open();
     }
 
     SetParent(parent) {
@@ -118,6 +144,7 @@ export class Player {
             // Positionnate camera
             this.FitCameraToCenteredObject(this._mesh, this._camera, this._controls);
 
+            this.AddObjectToGui('Model', this._mesh);
         }, function (xhr) {
             console.log((xhr.loaded / xhr.total * 100) + '% loaded material');
         }, function (error) {
@@ -135,6 +162,7 @@ export class Player {
 
         this._controls.update();
         this._renderer.render(this._scene, this._camera);
+        this._stats.update()
     }
 
     AddListeners(mouseModelInteraction, resize) {
@@ -169,10 +197,12 @@ export class Player {
         }
 
         const newWidth = this._parent.clientWidth;
+        const newHeight = this._parent.clientHeight;
+        this._gui.width = (newWidth * 35) / 100;
 
-        this._camera.aspect = newWidth / newWidth;
+        this._camera.aspect = newWidth / newHeight;
         this._camera.updateProjectionMatrix();
-        this._renderer.setSize(newWidth, newWidth);
+        this._renderer.setSize(newWidth, newHeight);
     }
 
     OnMouseMove(event) {
