@@ -26,16 +26,8 @@ const modelMaterial = {
       color: color,
 }
 
-player.CreateStats();
 player.CreateGui();
 
-player.LoadSTLModel(path, color, modelMaterial);
+player.LoadSTLModel(path, modelMaterial);
 player.AddListeners(false, true);
-
-player.AddObjectToGui('Camera', player._camera);
-
-// const cameraFolder = gui.addFolder('Camera');
-// cameraFolder.add(camera.position, 'z', 0, 10);
-// cameraFolder.open();
-
 player.Animate();

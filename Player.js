@@ -77,16 +77,15 @@ export class Player {
         this._gui = new GUI({ autoPlace: false });
         this._gui.domElement.id = 'gui';
         this._gui.width = (this._parent.clientWidth * 35) / 100;
-        // const guiContainer = document.getElementById('gui_container');
         this._parent.appendChild(this._gui.domElement);
-
     }
 
-    AddObjectToGui( name, object) {
+    AddObjectToGui(name, object) {
         const objectFolder = this._gui.addFolder(name);
         objectFolder.add(object.rotation, 'x', 0, Math.PI * 2);
         objectFolder.add(object.rotation, 'y', 0, Math.PI * 2);
         objectFolder.add(object.rotation, 'z', 0, Math.PI * 2);
+
         objectFolder.open();
     }
 
@@ -121,7 +120,7 @@ export class Player {
         this._scene.add(directionalLightUp);
     }
 
-    LoadSTLModel(url, color, modelMaterial) {
+    LoadSTLModel(url, modelMaterial) {
         if (!this._scene) {
             console.error("Scene has to be created before loading the STL model");
             return;
@@ -144,7 +143,7 @@ export class Player {
             // Positionnate camera
             this.FitCameraToCenteredObject(this._mesh, this._camera, this._controls);
 
-            this.AddObjectToGui('Model', this._mesh);
+            this.AddObjectToGui(url, this._mesh);
         }, function (xhr) {
             console.log((xhr.loaded / xhr.total * 100) + '% loaded material');
         }, function (error) {
@@ -162,7 +161,6 @@ export class Player {
 
         this._controls.update();
         this._renderer.render(this._scene, this._camera);
-        this._stats.update()
     }
 
     AddListeners(mouseModelInteraction, resize) {
